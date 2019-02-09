@@ -1,0 +1,1 @@
+This project's objective is the generation of a Tiny C compiler.
