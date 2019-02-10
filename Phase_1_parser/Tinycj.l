@@ -11,6 +11,7 @@
      * 2018-09-03 01:41:43
      */
     #include <stdlib.h>  /*This code passes directly to the lex.yy.c file*/
+    int lineNumber = 0;
 %}
 /*Rules declaration section*/
 zbased_digit [0-9]
@@ -37,6 +38,7 @@ new_line    \n
 
                     if(charr == '/')
                         break;
+                    
                     else if(charr == EOF){
                         printf("Malformed comment\n");
                         return -1;
@@ -145,7 +147,9 @@ new_line    \n
                             printf("Got a variable id\n");
                             return ID;
                         }
-{new_line}  /*Do nothing*/
+{new_line}  {
+    lineNumber++;
+}
 .   {
         printf("Got this %s",yytext);
         return yytext[0];
