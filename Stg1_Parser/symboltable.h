@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2019 Diego A. Rmz
  *
- * @file    ParseTable.h
+ * @file    Parser.h
  *
  * @author  Diego A. Rmz
  *
@@ -12,7 +12,8 @@
  * References:
  *          Code is based on previous code for linked lists from Advanced Programming
  *          and different internet references, like Professor Abelardo's code.
- *
+ *          Specifically, this file is based in the "Hash" example by Professor Abelardo.
+ * 
  * Revision history:
  *          09 Feb 2019 16:27 DST -- File created
  */
@@ -23,7 +24,7 @@
 
 //This enum came from professor Abelardo, and it is to define
 //the types tiny c can handle
-enum tinyCTypes {error = EXIT_FAILURE, integer, real};
+enum tinyCTypes {error = EXIT_FAILURE, integer, real, undefined};
 
 /**
  * @union val
@@ -35,24 +36,25 @@ enum tinyCTypes {error = EXIT_FAILURE, integer, real};
  */
 union val {            
    int     integerVal;                   
-   float   realVal;                    
+   float   realVal;
+   float   provisionalVal;
 };
 
 /**
- * @struct item
+ * @struct tableEntry
  *
- * @brief This is the item that is to be stored at the hash table.
- *
- * It consists of a string to be the key of the item, and a pointer
- * to a data structure or whatever.
+ * @brief This is the "payload" that the hashtable carries,
+ * and it serves to define a symbol obtained by the parser.
+ * 
+ * @c variableName The string holding the name of the variable, it may be
+ *    different from the name of the entry or not.
+ * 
+ * @c type the variable is an int or a float?
+ * 
+ * @c scope Depth of the scope it was found {{{}}}
+ * 
+ * @c lineFoundAt # of line the variable was found at.
  */
-typedef struct item_{
-    char * key; 
-    void * tableEntry; //Pointer to any data structure or type to be stored at the table
-}item;
-
-typedef struct item_ *item_p; //Pointer to the item type at the table
-
 typedef struct tableEntry_{
     char * variableName;    //Name for the variable found
     enum tinyCTypes type;   //Type for the variable
@@ -63,3 +65,10 @@ typedef struct tableEntry_{
 
 
 typedef struct tableEntry_ *entry_p; /* Declaration of a pointer to the value of the table entry */
+
+void printItem(gpointer key, gpointer value, gpointer user_data);
+void printTable(GHashTable *hashTable);
+
+entry_p newTableEntry(char *variableName, int scope, int lineFoundAt, union val value, enum tinyCTypes type);
+
+gboolean offerEntryAtTable(entry_p theEntry, GHashTable *theTable);

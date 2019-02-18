@@ -16,25 +16,24 @@ LEX		= flex
 YACC	= bison
 
 # Compiler flags
-FFLAG 	= -lfl
-ALLERR	= -Wall -pedantic
-OPTIM   = -O2
+FFLAG 	=`pkg-config --cflags --libs glib-2.0` -lfl -Wall -O2 -pedantic
 
 # Filenames
-LEXPARAM = Tinycj.l
 TGT_NAME = TinyC
-BISPARAM = TinyC.y
+LEXPARAM = scanner.l
+BISPARAM = parser.y
+SRC = parser.tab.c
 
 #Rule definition
-tinycgrammar: 
+tinyc: 
 	$(LEX) $(LEXPARAM)
 	$(YACC) -v $(BISPARAM)
-	$(GCC)  $(TGT_NAME).tab.c -o $(TGT_NAME) $(FFLAG) $(ALLERR) $(OPTIM)
+	$(GCC) $(SRC) -o $(TGT_NAME) $(FFLAG)
 
 #To delete all the things
 delete:
 	rm -f $(SRC)
 	rm -f $(TGT_NAME)
 	rm -f lex.yy.c
-	rm -f TinyC.tab.c
-	rm -f TinyC.output
+	rm -f parser.tab.c
+	rm -f parser.output
