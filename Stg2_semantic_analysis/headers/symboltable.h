@@ -17,6 +17,8 @@
  * Revision history:
  *          09 Feb 2019 16:27 DST -- File created
  */
+#ifndef SYMBOL_TABLE_H
+#define SYMBOL_TABLE_H
 
 #include <glib.h>
 
@@ -24,7 +26,7 @@
 
 //This enum came from professor Abelardo, and it is to define
 //the types tiny c can handle
-enum tinyCTypes {error = EXIT_FAILURE, integer, real, undefined};
+enum tinyCTypes {error = EXIT_FAILURE, integer, real, undefined,empty,boolean};
 
 /**
  * @union val
@@ -61,9 +63,11 @@ typedef struct tableEntry_{
     int scope;              //Depth of scope the variable was found at {{}}
     int lineFoundAt;        //Line this variable was found at
     union val value;        //Value of the variable
+    int refCounter;         //Since we create the variables at the scanner level
+                            //it is needed to avoid false redefinition errors
 }tableEntry;
 
-
+typedef struct tableEntry_ tableEntryNPtr;
 typedef struct tableEntry_ *entry_p; /* Declaration of a pointer to the value of the table entry */
 
 void printItem(gpointer key, gpointer value, gpointer user_data);
@@ -72,3 +76,9 @@ void printTable(GHashTable *hashTable);
 entry_p newTableEntry(char *variableName, int scope, int lineFoundAt, union val value, enum tinyCTypes type);
 
 gboolean offerEntryAtTable(entry_p theEntry, GHashTable *theTable);
+
+entry_p getEntry(char * key, GHashTable * theTable);
+
+entry_p createTempEntry(enum tinyCTypes type);
+
+#endif

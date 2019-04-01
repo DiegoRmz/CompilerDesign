@@ -31,7 +31,7 @@ tinyc:
 	$(GCC) $(SRC) -o $(TGT_NAME) $(FFLAG)
 
 #To delete all the things
-delete:
+clean:
 	rm -f $(SRC)
 	rm -f $(TGT_NAME)
 	rm -f lex.yy.c

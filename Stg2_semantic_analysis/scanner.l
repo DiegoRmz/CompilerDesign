@@ -2,7 +2,7 @@
 %{
     /*
      * File: scanner.l
-     * Author: Jay Ramirez/Diego A Rmz
+     * Author: Diego A Rmz
      * Description:
      *      The following code is the description of a lexical analizer for the language "TinyC"
      *
@@ -125,11 +125,13 @@ new_line    \n
         }
     }
 
-{obased_digit}{zbased_digit}*|{octalb_digit}+|0(x|X){hexab_digit}+|[+-]?{zbased_digit}* {        
+{obased_digit}{zbased_digit}*|{octalb_digit}+|0(x|X){hexab_digit}+|[+-]?{zbased_digit}* {       
+                                                                                yylval.dval = atoi(yytext); 
                                                                                 return FLOAT_NUM;                           
                                                                                         }
 [1-9][0-9]*|0(c|C)[0-7]+|0(x|X)[0-9A-Fa-f]+|[+-]?[0-9]*"."[0-9]+([eE][-+]?[0-9]+)?  {
-                                                                                return INT_NUM;         
+                                                                                        yylval.ival = atoi(yytext);
+                                                                                        return INT_NUM;         
                                                                                     }
 [A-Za-z_][A-Za-z0-9_]* {
         union val value;
@@ -138,6 +140,8 @@ new_line    \n
         entry_p entry = newTableEntry(strdup(yytext), scopeDepth, yylineno, value, currentType);
 
         offerEntryAtTable(entry, symTable);
+
+        yylval.name = strdup(yytext);
         return ID;
     }
 {new_line} {
